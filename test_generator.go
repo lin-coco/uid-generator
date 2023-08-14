@@ -1,0 +1,5 @@
+package uidgenerator
+
+func ExampleTestUidGenerator() {
+
+}
