@@ -21,7 +21,7 @@ print:
 
 */
 
-const padSize = 120
+const padSize = 56
 
 type paddedAtomicLong struct {
 	// Padded 56 bytes. Padded to CPU cache row size

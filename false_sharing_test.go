@@ -1,6 +1,7 @@
 package uidgenerator
 
 import (
+	"sync"
 	"testing"
 	"time"
 )
@@ -20,11 +21,19 @@ func TestPadding(t *testing.T) {
 	}
 	var id int64
 	now := time.Now()
-	for i := 0; i < 20000000; i++ {
-		id, err = cachedUidGenerator.GetUID()
-		for id == 0 || err != nil {
-			id, err = cachedUidGenerator.GetUID()
-		}
+	wg := sync.WaitGroup{}
+	wg.Add(10)
+	for i := 0; i < 10; i++ {
+		go func() {
+			for i := 0; i < 50000; i++ {
+				id, err = cachedUidGenerator.GetUID()
+				for id == 0 || err != nil {
+					id, err = cachedUidGenerator.GetUID()
+				}
+			}
+			wg.Done()
+		}()
 	}
+	wg.Wait()
 	t.Log(time.Since(now))
 }

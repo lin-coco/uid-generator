@@ -3,7 +3,6 @@ package uidgenerator
 import (
 	"errors"
 	"fmt"
-	"log"
 	"sync"
 )
 
@@ -186,7 +185,7 @@ type DiscardPutBufferHandler struct {
 }
 
 func (d *DiscardPutBufferHandler) RejectPutBuffer(ringBuffer *ringBuffer, uid int64) {
-	log.Printf("Rejected putting buffer for uid:%d. %s", uid, ringBuffer.string())
+	//log.Printf("Rejected putting buffer for uid:%d. %s", uid, ringBuffer.string())
 }
 
 // ErrorTakeBufferHandler Policy for RejectedTakeBufferHandler,  after logging
@@ -194,5 +193,5 @@ type ErrorTakeBufferHandler struct {
 }
 
 func (d *ErrorTakeBufferHandler) RejectTakeBuffer(ringBuffer *ringBuffer) {
-	log.Printf("Rejected take buffer. %s", ringBuffer.string())
+	//log.Printf("Rejected take buffer. %s", ringBuffer.string())
 }
