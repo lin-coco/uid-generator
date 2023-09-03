@@ -21,14 +21,13 @@ print:
 
 */
 
-const padSize = 0
+const padSize = 120
 
 type paddedAtomicLong struct {
 	// Padded 56 bytes. Padded to CPU cache row size
 	// sysctl hw.cachelinesize
 	pad [padSize]byte
 	atomic.Int64
-	//value int64
 }
 
 func newPaddedAtomicLong(initialValue int64) *paddedAtomicLong {
