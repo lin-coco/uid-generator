@@ -32,7 +32,7 @@ type ringBuffer struct {
 	bufferSize int
 	indexMask  int64
 	slots      []int64
-	flags      []*paddedAtomicLong
+	flags      []paddedAtomicLong
 	// Tail: last position sequence to produce
 	tail *paddedAtomicLong
 	// Cursor: current position sequence to consume
@@ -57,10 +57,7 @@ Sample: paddingFactor=20, bufferSize=1000 -> threshold=1000 * 20 /100,
 padding buffer will be triggered when tail-cursor<threshold
 */
 func newRingBuffer(bufferSize, paddingFactor int) (*ringBuffer, error) {
-	flags := make([]*paddedAtomicLong, 0, bufferSize)
-	for i := 0; i < bufferSize; i++ {
-		flags = append(flags, newPaddedAtomicLong(canPutFlag))
-	}
+	flags := newSlicePaddedAtomicLong(canPutFlag, bufferSize)
 	return &ringBuffer{
 		bufferSize:                bufferSize,
 		indexMask:                 int64(bufferSize) - 1,
@@ -148,7 +145,7 @@ func (r *ringBuffer) take() (int64, error) {
 	// trigger padding in an async-mode if reach the threshold
 	currentTail := r.tail.Load()
 	if currentTail-nextCursor < int64(r.paddingThreshold) {
-		log.Printf("Reach the padding threshold:%d. tail:%d, cursor:%d, rest:%d", r.paddingThreshold, currentTail, nextCursor, currentTail-nextCursor)
+		//log.Printf("Reach the padding threshold:%d. tail:%d, cursor:%d, rest:%d", r.paddingThreshold, currentTail, nextCursor, currentTail-nextCursor)
 		r.bufferPaddingExecutor.asyncPadding()
 	}
 	// cursor catch the tail, means that there is no more available UID to take

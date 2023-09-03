@@ -21,17 +21,29 @@ print:
 
 */
 
+const padSize = 0
+
 type paddedAtomicLong struct {
-	// Padded 48 bytes
-	pad [56]byte
+	// Padded 56 bytes. Padded to CPU cache row size
+	// sysctl hw.cachelinesize
+	pad [padSize]byte
 	atomic.Int64
+	//value int64
 }
 
 func newPaddedAtomicLong(initialValue int64) *paddedAtomicLong {
-	p := &paddedAtomicLong{
-		pad:   [56]byte{},
-		Int64: atomic.Int64{},
-	}
+	p := &paddedAtomicLong{[padSize]byte{}, atomic.Int64{}}
 	p.Store(initialValue)
 	return p
+}
+
+func newSlicePaddedAtomicLong(initialValue int64, bufferSize int) []paddedAtomicLong {
+	flags := make([]paddedAtomicLong, bufferSize)
+	if initialValue == 0 {
+		return flags
+	}
+	for i := 0; i < bufferSize; i++ {
+		flags[i].Store(initialValue)
+	}
+	return flags
 }

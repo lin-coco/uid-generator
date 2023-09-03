@@ -2,7 +2,6 @@ package uidgenerator
 
 import (
 	"errors"
-	"log"
 	"sync/atomic"
 	"time"
 )
@@ -49,10 +48,10 @@ func newBufferPaddingExecutor(ringBuffer *ringBuffer, uidProvider bufferedUidPro
 
 // Padding buffer fill the slots until to catch the cursor
 func (b *bufferPaddingExecutor) paddingBuffer() {
-	log.Printf("Ready to padding buffer lastSecond:%d. %s", b.lastSecond.Load(), b.ringBuffer.string())
+	//log.Printf("Ready to padding buffer lastSecond:%d. %s", b.lastSecond.Load(), b.ringBuffer.string())
 	// is still running
 	if !b.running.CompareAndSwap(false, true) {
-		log.Printf("Padding buffer is still running. %s", b.ringBuffer.string())
+		//log.Printf("Padding buffer is still running. %s", b.ringBuffer.string())
 		return
 	}
 
@@ -70,7 +69,7 @@ func (b *bufferPaddingExecutor) paddingBuffer() {
 
 	// not running now
 	b.running.CompareAndSwap(true, false)
-	log.Printf("end to padding buffer lastSecond:%d. %s", b.lastSecond.Load(), b.ringBuffer.string())
+	//log.Printf("end to padding buffer lastSecond:%d. %s", b.lastSecond.Load(), b.ringBuffer.string())
 }
 
 func (b *bufferPaddingExecutor) asyncPadding() {

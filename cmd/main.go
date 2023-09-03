@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 	"uidgenerator"
 )
 
@@ -24,14 +25,18 @@ func main() {
 	//if err != nil {
 	//	log.Fatal(err)
 	//}
-	//now := time.Now()
-	//for i := 0; i < 10000000; i++ {
-	//	uid, _ = cachedUidGenerator.GetUID()
-	//}
-	//fmt.Println(time.Since(now))
-	uid, err := cachedUidGenerator.GetUID()
-	if err != nil {
-		log.Fatal(err)
+	var id int64
+	now := time.Now()
+	for i := 0; i < 20000000; i++ {
+		id, err = cachedUidGenerator.GetUID()
+		for id == 0 || err != nil {
+			id, err = cachedUidGenerator.GetUID()
+		}
 	}
-	fmt.Println(defaultUidGenerator.ParseUID(uid))
+	fmt.Println(time.Since(now))
+	//uid, err := cachedUidGenerator.GetUID()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//fmt.Println(defaultUidGenerator.ParseUID(uid))
 }
